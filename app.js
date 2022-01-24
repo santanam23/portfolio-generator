@@ -3,34 +3,6 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const generatePage = require('./src/page-template');
 
-// const fs = require('fs');
-// const generatePage = require('./src/page-template');
-
-// const pageHTML = generatePage(name, github);
-
-// fs.writeFile('./index.html', pageHTML, err => {
-//   if (err) throw err;
-
-//   console.log('Portfolio complete! Check out index.html to see the output!');
-// });
-// const generatePage = (name, github) => {
-//   return `
-//   <!DOCTYPE html> 
-//   <html lang="en"> 
-//   <head>
-//     <meta charset="UTF-8">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-//     <title>Portfolio Demo</title>
-//   </head>
-//   <body>
-//     <h1>${name}</h1>
-//     <h2><a href="https://github.com/${github}">Github</a></h2>
-//   </body>
-//   </html>
-//   `;
-// };
-
 const promptUser = () => {
   return inquirer.prompt([
     {
@@ -74,17 +46,17 @@ const promptUser = () => {
   ]);
 };
 
-const promptProject = () => {
+const promptProject = portfolioData => {
   console.log(`
 =================
 Add a New Project
 =================
 `);
-// If there's no 'projects' array property, create one
-if (!portfolioData.projects) {
+ // If there's no 'projects' array property, create one
+ if (!portfolioData.projects) {
   portfolioData.projects = [];
 }
-  return inquirer
+return inquirer
   .prompt([
     {
       type: 'input',
@@ -115,21 +87,21 @@ if (!portfolioData.projects) {
     {
       type: 'checkbox',
       name: 'languages',
-      message: 'What did you build this project with? (Check all that apply)',
+      message: 'What did you this project with? (Check all that apply)',
       choices: ['JavaScript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
     },
     {
       type: 'input',
       name: 'link',
       message: 'Enter the GitHub link to your project. (Required)',
-        validate: linkInput => {
-          if (linkInput) {
-            return true;
-          } else {
-            console.log('You need to enter a project GitHub link!');
-            return false;
-          }
+      validate: linkInput => {
+        if (linkInput) {
+          return true;
+        } else {
+          console.log('You need to enter a project GitHub link!');
+          return false;
         }
+      }
     },
     {
       type: 'confirm',
@@ -155,22 +127,13 @@ if (!portfolioData.projects) {
 };
 
 promptUser()
-  .then(promptProject)
-  .then(portfolioData => {
-    console.log(portfolioData);
-  });
-// const printProfileData = profileDataArr => {
-//     // This...
-//     for (let i = 0; i < profileDataArr.length; i += 1) {
-//       console.log(profileDataArr[i]);
-//     }
-  
-//     console.log('================');
-  
-//     // Is the same as this...
-//     profileDataArr.forEach(profileItem => console.log(profileItem));
-//   };
-// console.log(inquirer);
-
-  // printProfileData(profileDataArgs);
-  //console.log(generatePage('Miriam', 'santanam23'));
+.then(promptProject)
+.then(portfolioData => {
+  const pageHTML = generatePage(portfolioData);
+  // will be uncommented in lesson 4
+  // const pageHTML = generatePage(portfolioData);
+  // fs.writeFile('./index.html', pageHTML, err => {
+  //   if (err) throw new Error(err);
+  //   console.log('Page created! Check out index.html in this directory to see it!');
+  // });
+});
